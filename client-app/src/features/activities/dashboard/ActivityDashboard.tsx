@@ -13,6 +13,7 @@ interface Props {
     toggleForm: (id?: string) => void;
     upsertActivity: (activity: Activity) => void;
     deleteActivity: (id: string) => void;
+    submitting: boolean;
 
 }
 
@@ -23,7 +24,8 @@ export default function ActivityDashboard(props: Props) {
                 <ActivityList 
                     activities={props.activities}
                     selectActivity = {props.selectActivity} 
-                    deleteActivity = {props.deleteActivity}/>
+                    deleteActivity = {props.deleteActivity}
+                    submitting = { props.submitting }/>
             </Grid.Column>
             <Grid.Column width='6'>
                 { props.selectedActivity && !props.editMode &&
@@ -36,7 +38,8 @@ export default function ActivityDashboard(props: Props) {
                 <ActivityForm  
                     toggleForm = { props.toggleForm }
                     activity={props.selectedActivity}
-                    upsertActivity = { props.upsertActivity } /> }
+                    upsertActivity = { props.upsertActivity }
+                    submitting = { props.submitting } /> }
             </Grid.Column>
         </Grid>
     )
