@@ -1,16 +1,14 @@
 import { Segment, Form, Button } from "semantic-ui-react";
-import { Activity } from "../../../app/models/Activity";
 import { ChangeEvent, useState } from "react";
-
-interface Props {
-    activity: Activity | undefined;
-    toggleForm: () => void;
-    upsertActivity: (activity: Activity) => void;
-    submitting: boolean;
-}
+import { useStore } from "../../../app/stores/store";
+import { observer } from "mobx-react-lite";
 
 
-export default function ActivityForm({activity: selectedActivity, toggleForm, upsertActivity, submitting} : Props) {
+export default observer(function ActivityForm() {
+    const {activityStore} = useStore();
+    const {selectedActivity, toggleActivityForm, 
+            createActivity, updateActivity, loading} = activityStore;
+
 
     const initialState = selectedActivity ?? {
         id: '',
@@ -25,7 +23,7 @@ export default function ActivityForm({activity: selectedActivity, toggleForm, up
     const [activity, setActivity] = useState(initialState);
 
     function handleSubmit() {
-        upsertActivity(activity);
+        activity.id ? updateActivity(activity) : createActivity(activity);
     }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -43,9 +41,9 @@ export default function ActivityForm({activity: selectedActivity, toggleForm, up
                 <Form.Input placeholder='City' value={activity.city} name='city' onChange={handleInputChange}/>
                 <Form.Input placeholder='Venue' value={activity.venue} name='venue' onChange={handleInputChange}/>
 
-                <Button loading={submitting} floated="right" positive type="submit" content="Submit"/>
-                <Button onClick={()=> toggleForm()} floated="right" type="button" content="Cancel"/>
+                <Button loading={loading} floated="right" positive type="submit" content="Submit"/>
+                <Button onClick={()=> toggleActivityForm()} floated="right" type="button" content="Cancel"/>
             </Form>
         </Segment>
     )
-}
+})
