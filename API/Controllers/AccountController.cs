@@ -40,11 +40,13 @@ namespace API.Controllers {
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto) {
             if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username)) {
-                return BadRequest("Username is already used!");
+                ModelState.AddModelError("username", "Username is already used");
+                return ValidationProblem();
             }
 
             if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email)) {
-                return BadRequest("Email is already used!");
+                ModelState.AddModelError("email", "Email is already used");
+                return ValidationProblem();
             }
 
             var user = new AppUser {
@@ -66,7 +68,7 @@ namespace API.Controllers {
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser() {
-            var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+            var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email)!);
             return CreateUserObject(user!);
         }
 
